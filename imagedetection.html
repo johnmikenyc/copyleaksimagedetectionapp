@@ -100,6 +100,16 @@
         .toggle-checkbox:checked + .toggle-label {
             background-color: #2096f3;
         }
+
+        /* Dashboard Graphs */
+        .trend-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 2s ease-out forwards;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
     </style>
 </head>
 
@@ -117,7 +127,12 @@
             <!-- Main Dashboards -->
             <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-3 mt-2">Detection</div>
             
-            <a href="#" onclick="switchView('text')" id="nav-text" class="nav-active flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
+            <a href="#" onclick="switchView('dashboard')" id="nav-dashboard" class="nav-active flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
+                <i class="fa-solid fa-chart-line w-4"></i>
+                <span>Overview</span>
+            </a>
+
+            <a href="#" onclick="switchView('text')" id="nav-text" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
                 <i class="fa-solid fa-file-lines w-4"></i>
                 <span>Text Analysis</span>
             </a>
@@ -163,8 +178,8 @@
         <!-- Header -->
         <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
             <div>
-                <h1 class="text-lg font-bold text-slate-800" id="header-title">AI Text Detector</h1>
-                <p class="text-xs text-slate-500" id="header-subtitle">Advanced content authentication & plagiarism detection</p>
+                <h1 class="text-lg font-bold text-slate-800" id="header-title">Executive Overview</h1>
+                <p class="text-xs text-slate-500" id="header-subtitle">Real-time system performance and detection stats</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200">
@@ -174,6 +189,129 @@
                 <button class="text-slate-400 hover:text-slate-600"><i class="fa-regular fa-bell text-lg"></i></button>
             </div>
         </header>
+
+        <!-- ========================= DASHBOARD VIEW ========================= -->
+        <div class="flex-1 overflow-y-auto custom-scroll view-container bg-slate-50" id="view-dashboard">
+            <div class="max-w-6xl mx-auto p-8">
+                
+                <!-- Top Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Total Scans -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-cl-blue"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Scans (30 Days)</p>
+                                <h3 class="text-3xl font-black text-cl-navy mt-1" id="dash-scans">1,248</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-cl-blue/10 rounded-lg flex items-center justify-center text-cl-blue">
+                                <i class="fa-solid fa-layer-group text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs text-green-600 font-bold flex items-center">
+                            <i class="fa-solid fa-arrow-trend-up mr-1"></i> +12.5% from last month
+                        </div>
+                    </div>
+
+                    <!-- Flagged Content -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-cl-red"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Flagged AI Content</p>
+                                <h3 class="text-3xl font-black text-cl-red mt-1" id="dash-flagged">142</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-cl-red/10 rounded-lg flex items-center justify-center text-cl-red">
+                                <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                            <div class="bg-cl-red h-1.5 rounded-full" style="width: 11.3%"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-2 text-right">11.3% Detection Rate</p>
+                    </div>
+
+                    <!-- Average Score -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-cl-purple"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Avg. AI Confidence</p>
+                                <h3 class="text-3xl font-black text-cl-purple mt-1" id="dash-avg">88.4%</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-cl-purple/10 rounded-lg flex items-center justify-center text-cl-purple">
+                                <i class="fa-solid fa-brain text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-500">
+                            Across all flagged content
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800">AI Detection Trend</h3>
+                        <select class="text-xs bg-slate-50 border border-slate-200 rounded p-1 text-slate-500">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                        </select>
+                    </div>
+                    <div class="h-64 w-full relative">
+                        <!-- Simulated Chart -->
+                        <svg viewBox="0 0 1000 200" class="w-full h-full overflow-visible">
+                            <!-- Grid Lines -->
+                            <line x1="0" y1="150" x2="1000" y2="150" stroke="#f1f5f9" stroke-width="1" />
+                            <line x1="0" y1="100" x2="1000" y2="100" stroke="#f1f5f9" stroke-width="1" />
+                            <line x1="0" y1="50" x2="1000" y2="50" stroke="#f1f5f9" stroke-width="1" />
+                            
+                            <!-- Area Gradient -->
+                            <defs>
+                                <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="rgba(32, 150, 243, 0.2)" />
+                                    <stop offset="100%" stop-color="rgba(32, 150, 243, 0)" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Area Path -->
+                            <path d="M0,150 Q100,120 200,140 T400,100 T600,60 T800,90 T1000,40 V200 H0 Z" fill="url(#gradient)" />
+                            
+                            <!-- Line Path -->
+                            <path d="M0,150 Q100,120 200,140 T400,100 T600,60 T800,90 T1000,40" fill="none" stroke="#2096f3" stroke-width="3" class="trend-line" />
+                            
+                            <!-- Points -->
+                            <circle cx="200" cy="140" r="4" fill="white" stroke="#2096f3" stroke-width="2" />
+                            <circle cx="400" cy="100" r="4" fill="white" stroke="#2096f3" stroke-width="2" />
+                            <circle cx="600" cy="60" r="4" fill="white" stroke="#2096f3" stroke-width="2" />
+                            <circle cx="800" cy="90" r="4" fill="white" stroke="#2096f3" stroke-width="2" />
+                        </svg>
+                        
+                        <!-- Axis Labels -->
+                        <div class="flex justify-between text-[10px] text-slate-400 mt-2">
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                            <span>Sun</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Feed -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                        <h3 class="font-bold text-slate-800">Recent Analysis Activity</h3>
+                    </div>
+                    <div class="divide-y divide-slate-100" id="dash-recent-list">
+                        <!-- JS Injected -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
 
         <!-- ========================= TEXT ANALYSIS VIEW ========================= -->
         <div class="flex-1 flex overflow-hidden view-container" id="view-text">
@@ -501,28 +639,6 @@
                                     <label for="toggle-genai" class="toggle-label block overflow-hidden h-5 rounded-full bg-cl-blue cursor-pointer"></label>
                                 </div>
                             </div>
-
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <div class="text-sm font-bold text-slate-700">OCR Text Extraction</div>
-                                    <div class="text-xs text-slate-500">Analyze text embedded in images</div>
-                                </div>
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle-ocr" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-cl-blue" checked/>
-                                    <label for="toggle-ocr" class="toggle-label block overflow-hidden h-5 rounded-full bg-cl-blue cursor-pointer"></label>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <div class="text-sm font-bold text-slate-700">Face Analysis</div>
-                                    <div class="text-xs text-slate-500">Deepfake face swapping detection</div>
-                                </div>
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle-face" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300" />
-                                    <label for="toggle-face" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -568,6 +684,18 @@
         // --- TEXT DATA (NEWS MEDIA) ---
         const NEWS_MEDIA_DATA = [
             {
+                id: "IP_ALERT_001",
+                type: "Internal Document Scan",
+                title: "Confidential: Project Orion Specs",
+                date: "Just Now",
+                words: 850,
+                content: `<span class="highlight-plag">PROPRIETARY AND CONFIDENTIAL. The following specifications detail the solid-state electrolyte composition for the next-generation Orion cell architecture.</span> 
+                <span class="highlight-source-match">The cathode material utilizes a high-nickel layered oxide, specifically LiNi0.9Co0.05Mn0.05O2, tailored for maximum energy density.</span> 
+                <span class="highlight-ai">Experimental results indicate a 40% improvement in cycle life compared to conventional liquid electrolyte systems under rapid charging conditions.</span> 
+                This document is classified as Level 4 Restricted and contains trade secrets protected under NDA #44-2024. Unauthorized distribution is strictly prohibited.`,
+                analysis: { score: 99.5, sourceMatch: "Yes", ai: 99, sm: 85, plag: 12, verdict: "AI GENERATED" }
+            },
+            {
                 id: "NEWS_001",
                 type: "Digital Newspaper",
                 title: "Breaking: Tech Merger Announced",
@@ -586,8 +714,8 @@
                 title: "Evening News: Local Election",
                 date: "Oct 24, 2023",
                 words: 210,
-                content: `(CAMERA 1 - ANCHOR)<br>Good evening. I'm Sarah Jenkins. Tonight, a surprising turn in the mayoral race.<br><br>(B-ROLL: VOTING BOOTHS)<br>Voter turnout has hit record highs in District 4, defying early polling models. We spoke to residents waiting in line for hours at the community center.`,
-                analysis: { score: 0.5, sourceMatch: "No", ai: 0, sm: 0, plag: 0, verdict: "HUMAN" }
+                content: `<span class="highlight-ai">(CAMERA 1 - ANCHOR)<br>Good evening. I'm Sarah Jenkins. Tonight, a surprising turn in the mayoral race.<br><br>(B-ROLL: VOTING BOOTHS)<br>Voter turnout has hit record highs in District 4, defying early polling models. We spoke to residents waiting in line for hours at the community center.</span>`,
+                analysis: { score: 100.0, sourceMatch: "Yes", ai: 100, sm: 0, plag: 0, verdict: "AI GENERATED" }
             },
             {
                 id: "NEWS_004",
@@ -596,8 +724,26 @@
                 date: "Oct 23, 2023",
                 words: 300,
                 content: `<span class="highlight-source-match">Asian markets finished mixed on Tuesday as investors digested new economic data from China. The Hang Seng Index dropped 1.2% while the Nikkei 225 gained 0.5%.</span>
-                The technology sector led the gains in Tokyo, supported by strong earnings reports from semiconductor manufacturers.`,
+                <span class="highlight-ai">The technology sector led the gains in Tokyo, supported by strong earnings reports from semiconductor manufacturers.</span>`,
                 analysis: { score: 100.0, sourceMatch: "Yes", ai: 90, sm: 10, plag: 0, verdict: "AI GENERATED" } 
+            },
+            {
+                id: "TXT_NEW_001",
+                type: "Marketing Copy",
+                title: "Blog Post: 5 Tips for SEO",
+                date: "Oct 22, 2023",
+                words: 600,
+                content: `<span class="highlight-ai">Search Engine Optimization (SEO) is the practice of increasing the quantity and quality of traffic to your website through organic search engine results. Here are five tips to improve your ranking: 1. Optimize for Keywords. 2. Create High-Quality Content. 3. Improve Site Speed.</span>`,
+                analysis: { score: 100.0, sourceMatch: "Yes", ai: 100, sm: 20, plag: 5, verdict: "AI GENERATED" }
+            },
+            {
+                id: "TXT_NEW_002",
+                type: "Academic Paper",
+                title: "Abstract: Quantum Mechanics",
+                date: "Oct 21, 2023",
+                words: 400,
+                content: `<span class="highlight-ai">Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles. It is the foundation of all quantum physics including quantum chemistry, quantum field theory, quantum technology, and quantum information science.</span>`,
+                analysis: { score: 98.5, sourceMatch: "Yes", ai: 98, sm: 10, plag: 2, verdict: "AI GENERATED" }
             }
         ];
 
@@ -605,7 +751,8 @@
         const IMAGE_DB = [
             {
                 id: "IMG_008", author: "Earring Scan", type: "Product",
-                imgSrc: "earring.png", heatmapImgSrc: "earringafter.png",
+                imgSrc: "https://i.postimg.cc/RCWHtRYn/earring.png", 
+                heatmapImgSrc: "https://i.postimg.cc/3rzDFGMy/earringafter.png",
                 analysis: {
                     risk_label: "DETECTED", score_ai: 95.8, score_human: 4.2,
                     heatmapStyle: "background: radial-gradient(circle at 48% 72%, rgba(220, 38, 38, 0.6) 0%, rgba(220, 38, 38, 0.3) 20%, transparent 30%), linear-gradient(0deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.3));",
@@ -624,7 +771,8 @@
             },
             {
                 id: "IMG_007", author: "Perfume Influencer", type: "Social",
-                imgSrc: "perfumeinfluencer-beforepic.png", heatmapImgSrc: "perfumeinfluencer.png",
+                imgSrc: "https://i.postimg.cc/jdNngjKZ/perfumeinfluencer_beforepic.png", 
+                heatmapImgSrc: "https://i.postimg.cc/fW10fd4y/perfumeinfluencer.png",
                 analysis: {
                     risk_label: "DETECTED", score_ai: 92.5, score_human: 7.5,
                     heatmapStyle: "background: radial-gradient(circle at 50% 30%, rgba(220, 38, 38, 0.6) 0%, rgba(220, 38, 38, 0.3) 40%, transparent 60%);",
@@ -633,7 +781,7 @@
             },
             {
                 id: "DL_004", author: "Robert Davidson - NY DL", type: "ID Verification",
-                imgSrc: "dl_robert_davidson_ny.jpg", 
+                imgSrc: "https://i.postimg.cc/KvL3qYxS/dlbefore.jpg", 
                 heatmapImgSrc: "https://i.postimg.cc/pX85GdRM/dlafter.png",
                 analysis: {
                     risk_label: "DETECTED", score_ai: 94.2, score_human: 5.8,
@@ -643,7 +791,7 @@
             },
             {
                 id: "IMG_005", author: "Job Candidate", type: "ID Verification",
-                imgSrc: "https://i.postimg.cc/KvL3qYxS/dlbefore.jpg", 
+                imgSrc: "https://i.postimg.cc/WbrqW4j5/before.png", 
                 heatmapImgSrc: "https://i.postimg.cc/dtdZH0vB/after.png",
                 analysis: {
                     risk_label: "DETECTED", score_ai: 88.5, score_human: 11.5,
@@ -659,9 +807,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderScanList();
             renderImageList();
+            renderDashboardActivity();
             loadReport(NEWS_MEDIA_DATA[0].id); // Load default text
             loadImgDoc(IMAGE_DB[0].id); // Load default image silently
-            switchView('text');
+            switchView('dashboard'); // Start on Dashboard
         });
 
         // --- NAVIGATION & VIEW LOGIC ---
@@ -669,7 +818,7 @@
             document.querySelectorAll('.view-container').forEach(el => el.classList.add('hidden'));
             document.getElementById(`view-${view}`).classList.remove('hidden');
 
-            ['text', 'image', 'upload', 'config', 'api'].forEach(v => {
+            ['dashboard', 'text', 'image', 'upload', 'config', 'api'].forEach(v => {
                 const el = document.getElementById(`nav-${v}`);
                 if(el) el.className = "flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-md text-sm font-medium transition-colors";
             });
@@ -681,7 +830,10 @@
             const titleEl = document.getElementById('header-title');
             const subTitleEl = document.getElementById('header-subtitle');
             
-            if(view === 'text') {
+            if(view === 'dashboard') {
+                titleEl.innerText = "Executive Overview";
+                subTitleEl.innerText = "Real-time system performance and detection stats";
+            } else if(view === 'text') {
                 titleEl.innerText = "AI Text Detector";
                 subTitleEl.innerText = "Advanced content authentication & plagiarism detection";
             } else if (view === 'image') {
@@ -697,6 +849,49 @@
                 titleEl.innerText = "API Credentials";
                 subTitleEl.innerText = "Manage access keys and tokens";
             }
+        }
+
+        // --- DASHBOARD LOGIC ---
+        function renderDashboardActivity() {
+            const list = document.getElementById('dash-recent-list');
+            list.innerHTML = '';
+            
+            // Combine recent items
+            const recent = [
+                ...NEWS_MEDIA_DATA.map(i => ({...i, category: 'Text'})), 
+                ...IMAGE_DB.map(i => ({...i, title: i.author, category: 'Image'}))
+            ].slice(0, 5);
+
+            recent.forEach(item => {
+                const isRisk = item.analysis.score_ai > 80 || item.analysis.score > 80;
+                const riskColor = isRisk ? 'text-cl-red' : 'text-cl-green';
+                const icon = item.category === 'Text' ? 'fa-file-lines' : 'fa-image';
+                
+                const div = document.createElement('div');
+                div.className = "p-4 flex items-center justify-between hover:bg-slate-50 transition-colors";
+                div.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-400">
+                            <i class="fa-solid ${icon}"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-slate-800">${item.title || item.author}</div>
+                            <div class="text-xs text-slate-500">${item.category} • ID: ${item.id}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm font-bold ${riskColor}">${item.analysis.verdict || item.analysis.risk_label}</div>
+                        <div class="text-xs text-slate-400">Score: ${item.analysis.score || item.analysis.score_ai}%</div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+
+            // Calc Stats
+            const total = 1248 + recent.length;
+            const flagged = 142 + recent.filter(i => i.analysis.score_ai > 80 || i.analysis.score > 80).length;
+            document.getElementById('dash-scans').innerText = total.toLocaleString();
+            document.getElementById('dash-flagged').innerText = flagged.toLocaleString();
         }
 
         // --- UPLOAD LOGIC ---
